@@ -1,0 +1,191 @@
+﻿Basic Linux:
+
+ctrl+ALt+F(,2,3,4,5,6) - different virtual consoles
+echo $TERM for current console
+infocmp "terminal" will convert binary data to terminal config
+
+ls -R (all files and subdirectories)
+
+cd .. (one folder up)
+
+-a parameter to list all files, the -i parameter to
+list the inode for each file, the -l parameter to produce a long listing, and the -s parameter to
+list the block size of the files. The inode of a file or directory is a unique identification number
+the kernel assigns to each object in the filesystem. Combining all of these parameters creates the
+easy-to-remember -sail parameter:
+$ ls -sail
+
+$ touch -t 200812251200 test1
+$ ls -l test1
+-rw-r--r-- 1 rich rich 0 Dec 25 2008 test1
+
+The -R parameter is extremely powerful. It allows you to recursively copy the contents of an
+entire directory in one command:
+$ cp -R dir1 dir2
+
+-------
+memory
+You can see the current status of the virtual memory on your Linux system by viewing the special
+/proc/meminfo file. Here’s an example of a sample /proc/meminfo entry:
+# cat /proc/meminfo
+MemTotal: 255392 kB
+MemFree: 4336 kB
+Buffers: 1236 kB
+-----------
+For example, if you need to see everything running on the
+system, use the -ef parameter combination (the ps command lets you combine parameters
+together like this):
+$ ps -ef
+UID PID PPID C STIME TTY TIME CMD
+root 1 0 0 11:29 ? 00:00:01 init [5]
+root 2 0 0 11:29 ? 00:00:00 [kthreadd]
+root 3 2 0 11:29 ? 00:00:00 [migration/0]
+---------------
+$ sort -n file2
+1
+2
+3
+10
+45
+75
+100
+145
+--------------
+$ du -sh * | sort -nr
+1008k mrtg-2.9.29.tar.gz
+972k bldg1
+888k fbs2.pdf
+760k Printtest
+680k rsync-2.6.6.tar.gz
+660k code
+516k fig1001.tiff
+496k test
+496k php-common-4.0.4pl1-6mdk.i586.rpm
+448k MesaGLUT-6.5.1.tar.gz
+400k plp
+Notice that the -r option also sorts the values in descending order, so you can easily see what
+files are taking up the most space in your directory.
+-----------------------
+If you want to reverse the search (output lines that don’t match the pattern) use the -v parameter:
+$ grep -v t file1
+one
+four
+five
+$
+If you need to find the line numbers where the matching patterns are found, use the -n parameter:
+$ grep -n t file1
+2:two
+3:three
+$
+If you just need to see a count of how many lines contain the matching pattern, use the -c parameter:
+$ grep -c t file1
+2
+$
+If you need to specify more than one matching pattern, use the -e parameter to specify each
+individual pattern:
+$ grep -e t -e f file1
+two
+three
+four
+five
+$
+This example outputs lines that contain either the string t or the string f.
+-----------------
+
+
+hashcat
+
+extracting ntlm, check for -m 1000
+
+/hash/hashcat-cli64.bin -m 1000 -o winpass.txt -a 0 /root/Desktop/hash.txt /usr/share/wordlists/rockyou.txt ()
+
+
+extracting ntlmv2, check for -m 5600, used this option after extracting ntlmv2 using responder wpa option (think it was responder -I xx.xx.xx.xx -wv))
+
+-----------------------
+
+sed awk
+
+actual data:
+
+Controller       : 82608.82608 ScController SN 82608
+ControllerPort   : 82608.5764839588728320115.127 ScControllerPort 5000D3100142B073
+ExternalDevice   : 
+Lun              : 8
+OperationalState : ActiveOptimized
+Path             : 82608.82608.82608.33.30 ScServerHbaPath iqn.1998-01.com.vmware:p30cerphvir01-55e40944-5000d3100142b073
+Profile          : 82608.21 ScMappingProfile 76-5
+ReadOnly         : False
+Server           : 82608.5 ScServer P30CERPHVIR01
+ServerHba        : 82608.3968586165 ScServerHba iqn.1998-01.com.vmware:p30cerphvir01-55e40944
+Status           : Up
+StatusMessage    : 
+Transport        : Iscsi
+Volume           : 82608.76 ScVolume TEMP EBI-B
+ScName           : P30CER-SAN01
+ScSerialNumber   : 82608
+UniqueName       : ScMapping_82608.78.82608
+InstanceId       : 82608.78.82608
+InstanceName     : 82608-78
+ObjectType       : ScMapping
+
+
+$ sed -rn "/^(Controller |Volume)/ {p}; /Instance/ {s/I/IIIIIIIIIIIIIII/p}" sg.txt
+
+Controller       : 82608.82609 ScController SN 82609
+Volume           : 82608.143 ScVolume DVM-B
+IIIIIIIIIIIIIIInstanceId       : 82608.604.82608
+IIIIIIIIIIIIIIInstanceName     : 82608-604
+Controller       : 82608.82609 ScController SN 82609
+Volume           : 82608.143 ScVolume DVM-B
+IIIIIIIIIIIIIIInstanceId       : 82608.605.82608
+IIIIIIIIIIIIIIInstanceName     : 82608-605
+Controller       : 82608.82609 ScController SN 82609
+Volume           : 82608.143 ScVolume DVM-B
+IIIIIIIIIIIIIIInstanceId       : 82608.606.82608
+IIIIIIIIIIIIIIInstanceName     : 82608-606
+
+
+ sed "s/Vol\(.*\):/\1Vol:/" sg.txt
+
+
+StatusMessage    :
+Transport        : Iscsi
+ume           Vol: 82608.143 ScVolume DVM-B
+ScName           : P30CER-SAN01
+
+
+
+
+
+
+
+ sed -n "/^Controller / {s/.*: //; p}" sg.txt | sed "s/ .*//"
+82608.82609
+82608.82609
+82608.82609
+82608.82609
+
+
+ sed -n "/606/ s/^Instance\(.*\):/This is the Instance \1:/p" sg.txt
+
+This is the Instance Id       : 82608.606.82608
+This is the Instance Name     : 82608-606
+
+
+ awk -F":"  ' { if ($1 ~ /Volume/)  print ">" . $1 . "<"} ' sg.txt
+>Volume           <
+>Volume           <
+>Volume           <
+>Volume           <
+>Volume           <
+>Volume           <
+
+-------------------------------------------------
+notepad++ regex
+
+:select line not equal to
+^(?!.*extended.*)
+
+:select line not equal to extended or ghs
+^(?!.*(extended|GHS*).*).*
