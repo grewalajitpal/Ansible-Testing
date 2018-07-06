@@ -106,3 +106,4 @@ extracting ntlmv2, check for -m 5600, used this option after extracting ntlmv2 u
 #create subdirectories and files
 mkdir B && touch B/myfile.txt
 ===================================
+Git test
