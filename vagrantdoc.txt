@@ -1,0 +1,14 @@
+---
+-add box not install from vagrantcloud.com
+vagrant box add debian/jessie64
+mkdir vagrant
+vagrant up
+#login via ssh using vagrant user
+vagrant ssh
+exit
+#open vagrantfile and edit changes and reload , willl apply changes
+#connected port 8080 to 80 on guest
+vagrant reload
+vagrant ssh
+sudo apt-get update
+sudo apt-get install nginx
